@@ -5,7 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const seedPath = path.resolve(__dirname, "../src/public/rules/_seed.json");
+const seedPath = path.resolve(__dirname, "../src/_seed.json");
 const outPath = path.resolve(__dirname, "../src/public/rules/blocklist.json");
 const seed = JSON.parse(fs.readFileSync(seedPath, "utf8"));
 
@@ -24,5 +24,5 @@ const rules = seed.map(({ id, domain }) => ({
   },
 }));
 
-fs.writeFileSync(outPath, JSON.stringify(rules, null, 2));
+fs.writeFileSync(outPath, JSON.stringify(rules));
 console.log(`Wrote ${rules.length} rules to ${outPath}`);

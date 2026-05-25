@@ -1,5 +1,6 @@
 import { defineBackground } from "wxt/sandbox";
-import { get, update } from "@/lib/storage";
+import { get, onChanged, update } from "@/lib/storage";
+import { syncDynamicRules } from "@/lib/dynamic-rules";
 
 export default defineBackground(() => {
   // Initialise state on first install.
@@ -7,6 +8,13 @@ export default defineBackground(() => {
     if (details.reason === "install") {
       await update("streak", (s) => ({ ...s, startedAt: Date.now() }));
     }
+    // Always sync dynamic rules after install/update.
+    void syncDynamicRules();
+  });
+
+  // Re-sync dynamic rules whenever settings change (covers blocklist/allowlist edits).
+  onChanged("settings", () => {
+    void syncDynamicRules();
   });
 
   // Daily heartbeat — refreshes streak math, updates badge text.
@@ -37,7 +45,7 @@ export default defineBackground(() => {
     }
   });
 
-  // Re-enable protection on extension startup if it was on.
+  // Re-enable protection on extension startup if it was on, and re-sync dynamic rules.
   chrome.runtime.onStartup.addListener(async () => {
     const p = await get("protection");
     try {
@@ -53,6 +61,7 @@ export default defineBackground(() => {
     } catch {
       /* ignore */
     }
+    void syncDynamicRules();
   });
 
   // Messaging entry point for the content script's heuristic blocker.
