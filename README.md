@@ -6,24 +6,48 @@ A free, privacy-first browser extension that blocks distracting adult sites, fil
 
 ## Install (early access — no app store yet)
 
-We're in early access while we gather feedback. Pick your browser:
+We're in early access while we gather feedback.
 
-### 🦊 Firefox (easiest — one click)
-*Coming soon — signed `.xpi` will be attached to the [latest release](https://github.com/kranthi0003/streak/releases). Until then, use Firefox Developer Edition or Nightly with `xpinstall.signatures.required = false` in `about:config`.*
+### 🚀 One-line install (macOS / Linux)
 
-1. Download `streak-firefox.zip` from the [latest release](https://github.com/kranthi0003/streak/releases).
-2. Open `about:debugging#/runtime/this-firefox`
-3. Click **Load Temporary Add-on…**, pick the zip's `manifest.json`
-4. Done. (Temporary add-ons disappear on Firefox restart — signed XPI coming in v0.2.)
+Open Terminal and paste:
 
-### 🟢 Chrome / Brave / Edge / Arc
+```bash
+curl -fsSL https://raw.githubusercontent.com/kranthi0003/streak/main/install.sh | bash
+```
+
+This will:
+1. Clone Streak into `~/Documents/Streak-source`
+2. Install dependencies and build the extension
+3. Copy the ready-to-load build to `~/Streak-Extension/`
+4. Try to open `chrome://extensions` for you
+
+After it finishes, do this one-time setup in Chrome:
+
+1. Toggle **"Developer mode"** ON (top-right of `chrome://extensions`)
+2. Click **"Load unpacked"**
+3. Select the folder: `~/Streak-Extension/Chrome`
+4. Pin the Streak icon to your toolbar
+
+> **Why can't this be a single click?** Chrome blocks all extension installs from outside the Chrome Web Store. We'll be on the Web Store soon — but until then, the load-unpacked step is the only path.
+
+**Requirements:** Node.js 18+, git, npm. On macOS: `brew install node git`.
+
+### 🟢 Manual install (Chrome / Brave / Edge / Arc — works on Windows too)
+
 1. Download `streak-chrome.zip` from the [latest release](https://github.com/kranthi0003/streak/releases) and unzip it.
 2. Open `chrome://extensions` (or `edge://extensions`, `brave://extensions`, etc.)
 3. Toggle **Developer mode** ON (top-right)
 4. Click **Load unpacked**, pick the unzipped folder
 5. Pin the Streak icon to your toolbar
 
-> **Why isn't this on the Chrome Web Store yet?** We're validating with early users first. The store version comes after v0.5 once features stabilise.
+### 🦊 Firefox
+
+1. Download `streak-firefox.zip` from the [latest release](https://github.com/kranthi0003/streak/releases).
+2. Open `about:debugging#/runtime/this-firefox`
+3. Click **Load Temporary Add-on…**, pick the zip's `manifest.json`
+
+> Temporary add-ons disappear on Firefox restart. Signed XPI for permanent install is coming in v0.2.
 
 ## Features (MVP — v0.1)
 
@@ -31,33 +55,12 @@ We're in early access while we gather feedback. Pick your browser:
 - 🔍 **Search filtering** — forces SafeSearch on Google / Bing / DuckDuckGo
 - 🧠 **Content heuristics** — catches new/unknown sites by scanning page title + meta keywords
 - ⏳ **Tamper resistance** — PIN-protected disable + configurable cooldown (default 24 hours)
+- 🔒 **Strict Mode** — time-locked (1/7/30/90 days) — protection cannot be disabled from inside the extension while locked
 - 🔥 **Streak counter** — track days clean with milestones (1d, 3d, 7d, 14d, 30d, 60d, 90d, 180d, 365d)
 - 🆘 **Panic page** — when blocked, see your streak, a 4-7-8 breathing exercise, and a reflective journal prompt
 - 🔒 **Privacy-first** — all data stored locally. No server. No telemetry. No account.
 
-## Build from source (alternative install)
-
-If you'd rather build it yourself instead of downloading the release zip:
-
-```bash
-git clone https://github.com/kranthi0003/streak.git
-cd streak
-npm install
-npm run build           # writes to ./dist/chrome-mv3
-npm run build:firefox   # writes to ./dist/firefox-mv2
-```
-
-Then in Chrome: `chrome://extensions` → Developer mode ON → **Load unpacked** → select the `dist/chrome-mv3` folder inside the cloned `streak` directory.
-
-### Where exactly is the folder?
-
-If you cloned into your home directory, the path is:
-- **macOS / Linux:** `~/streak/dist/chrome-mv3`
-- **Windows:** `C:\Users\<you>\streak\dist\chrome-mv3`
-
-(It's a regular folder — visible in Finder/Explorer. The Chrome "Load unpacked" picker needs you to **select the `chrome-mv3` folder itself**, not double-click into it.)
-
-### Enable in Incognito / Private mode
+## Enable in Incognito / Private mode
 
 Chrome disables every extension in Incognito by default. To make Streak work there too:
 
@@ -66,16 +69,18 @@ Chrome disables every extension in Incognito by default. To make Streak work the
 
 Firefox: `about:addons` → Streak → Permissions → enable **"Run in Private Windows"**.
 
-## Cross-browser support
-
-Built with [WXT](https://wxt.dev/) — single codebase ships to Chrome, Firefox, Edge, Brave, Arc, Opera, and (later) Safari.
+## Build from source (for developers)
 
 ```bash
-npm run build           # Chrome MV3  → ./dist/chrome-mv3
-npm run build:firefox   # Firefox MV2 → ./dist/firefox-mv2
-npm run zip             # Production zip → ./dist/streak-<ver>-chrome.zip
-npm run dev             # Live-reload dev mode
+git clone https://github.com/kranthi0003/streak.git
+cd streak
+npm install
+npm run build           # writes to ./dist/chrome-mv3
+npm run build:firefox   # writes to ./dist/firefox-mv2
+npm run dev             # live-reload dev mode
 ```
+
+(`dist/` is the visible folder — same as `npm install && npm run build` inside the installer script.)
 
 ## Project layout
 
