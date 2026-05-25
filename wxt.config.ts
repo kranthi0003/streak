@@ -3,6 +3,9 @@ import { defineConfig } from "wxt";
 export default defineConfig({
   modules: ["@wxt-dev/module-react"],
   srcDir: "src",
+  // Output to a visible folder (not the default hidden `.output`)
+  // so `npm run build` writes to `dist/chrome-mv3/` and you can find it.
+  outDir: "dist",
   manifest: {
     name: "Streak — Stay focused, stay clean",
     description:

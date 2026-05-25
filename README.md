@@ -35,17 +35,36 @@ We're in early access while we gather feedback. Pick your browser:
 - 🆘 **Panic page** — when blocked, see your streak, a 4-7-8 breathing exercise, and a reflective journal prompt
 - 🔒 **Privacy-first** — all data stored locally. No server. No telemetry. No account.
 
-## Cross-browser support
+## Build from source (alternative install)
 
-Built with [WXT](https://wxt.dev/) — single codebase ships to Chrome, Firefox, Edge, Brave, Arc, Opera, and (later) Safari.
+If you'd rather build it yourself instead of downloading the release zip:
 
 ```bash
 git clone https://github.com/kranthi0003/streak.git
 cd streak
 npm install
-npm run build           # Chrome MV3 build → .output/chrome-mv3
-npm run build:firefox   # Firefox MV2 build → .output/firefox-mv2
-npm run zip             # Production zip for distribution
+npm run build           # writes to ./dist/chrome-mv3
+npm run build:firefox   # writes to ./dist/firefox-mv2
+```
+
+Then in Chrome: `chrome://extensions` → Developer mode ON → **Load unpacked** → select the `dist/chrome-mv3` folder inside the cloned `streak` directory.
+
+### Where exactly is the folder?
+
+If you cloned into your home directory, the path is:
+- **macOS / Linux:** `~/streak/dist/chrome-mv3`
+- **Windows:** `C:\Users\<you>\streak\dist\chrome-mv3`
+
+(It's a regular folder — visible in Finder/Explorer. The Chrome "Load unpacked" picker needs you to **select the `chrome-mv3` folder itself**, not double-click into it.)
+
+## Cross-browser support
+
+Built with [WXT](https://wxt.dev/) — single codebase ships to Chrome, Firefox, Edge, Brave, Arc, Opera, and (later) Safari.
+
+```bash
+npm run build           # Chrome MV3  → ./dist/chrome-mv3
+npm run build:firefox   # Firefox MV2 → ./dist/firefox-mv2
+npm run zip             # Production zip → ./dist/streak-<ver>-chrome.zip
 npm run dev             # Live-reload dev mode
 ```
 
