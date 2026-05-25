@@ -3,6 +3,8 @@ import { get, update } from "@/lib/storage";
 import { daysSince, nextMilestone, recordRelapse } from "@/lib/streak";
 import { hasPin, verifyPin } from "@/lib/pin";
 
+const INCOGNITO_DISMISSED_KEY = "ui.incognitoBannerDismissed";
+
 export function Popup() {
   const [days, setDays] = useState(0);
   const [enabled, setEnabled] = useState(true);
@@ -11,9 +13,11 @@ export function Popup() {
   const [pinInput, setPinInput] = useState("");
   const [showPinPrompt, setShowPinPrompt] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showIncognitoBanner, setShowIncognitoBanner] = useState(false);
 
   useEffect(() => {
     void refresh();
+    void checkIncognitoStatus();
     const i = setInterval(() => void refresh(), 5_000);
     return () => clearInterval(i);
   }, []);
@@ -24,6 +28,28 @@ export function Popup() {
     setEnabled(p.enabled);
     setCooldownUntil(p.cooldownUntil);
     setPinSet(hp);
+  }
+
+  async function checkIncognitoStatus() {
+    try {
+      const allowed = await chrome.extension.isAllowedIncognitoAccess();
+      const stored = await chrome.storage.local.get(INCOGNITO_DISMISSED_KEY);
+      const dismissed = Boolean(stored[INCOGNITO_DISMISSED_KEY]);
+      setShowIncognitoBanner(!allowed && !dismissed);
+    } catch {
+      setShowIncognitoBanner(false);
+    }
+  }
+
+  async function dismissIncognitoBanner() {
+    await chrome.storage.local.set({ [INCOGNITO_DISMISSED_KEY]: true });
+    setShowIncognitoBanner(false);
+  }
+
+  function openIncognitoSettings() {
+    // Chrome doesn't let extensions jump straight to their own incognito toggle,
+    // but we can deep-link to chrome://extensions; user clicks Details from there.
+    chrome.tabs.create({ url: `chrome://extensions/?id=${chrome.runtime.id}` });
   }
 
   async function handleDisableClick() {
@@ -72,6 +98,22 @@ export function Popup() {
         <h1>Streak</h1>
         <span className={`pill ${enabled ? "on" : "off"}`}>{enabled ? "Protection ON" : "OFF"}</span>
       </header>
+
+      {showIncognitoBanner && (
+        <div className="banner">
+          <div className="banner-body">
+            <strong>One more step:</strong> enable Streak in Incognito / Private windows.
+          </div>
+          <div className="banner-actions">
+            <button className="link" onClick={openIncognitoSettings}>
+              Open settings
+            </button>
+            <button className="link" onClick={() => void dismissIncognitoBanner()}>
+              Dismiss
+            </button>
+          </div>
+        </div>
+      )}
 
       <section className="streak-card">
         <div className="days">{days}</div>

@@ -13,6 +13,11 @@ html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFo
 .actions { display: flex; flex-direction: column; gap: 8px; }
 .cooldown { background: rgba(234, 179, 8, 0.12); border: 1px solid rgba(234, 179, 8, 0.3); border-radius: 10px; padding: 12px; font-size: 13px; }
 .cooldown p { margin: 0 0 8px 0; }
+.banner { background: rgba(234, 179, 8, 0.10); border: 1px solid rgba(234, 179, 8, 0.35); border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; font-size: 12px; }
+.banner-body { color: #fde68a; margin-bottom: 6px; line-height: 1.45; }
+.banner-actions { display: flex; gap: 8px; }
+.banner-actions .link { padding: 2px 0; color: #fde68a; }
+.banner-actions .link:hover { color: #fff; }
 button { font: inherit; border: 0; padding: 10px 14px; border-radius: 8px; cursor: pointer; background: #1e293b; color: #f8fafc; }
 button:hover { background: #334155; }
 button.danger { background: #b91c1c; }
