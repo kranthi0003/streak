@@ -10,6 +10,9 @@ export default defineConfig({
     name: "Streak — Stay focused, stay clean",
     description:
       "Block adult sites, filter search results, and protect your streak. Privacy-first, no account required.",
+    // "spanning" → same storage + service worker shared between normal and
+    // incognito windows. User still has to enable "Allow in incognito" once.
+    incognito: "spanning",
     permissions: [
       "storage",
       "declarativeNetRequest",

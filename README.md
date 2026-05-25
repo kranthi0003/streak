@@ -57,6 +57,15 @@ If you cloned into your home directory, the path is:
 
 (It's a regular folder — visible in Finder/Explorer. The Chrome "Load unpacked" picker needs you to **select the `chrome-mv3` folder itself**, not double-click into it.)
 
+### Enable in Incognito / Private mode
+
+Chrome disables every extension in Incognito by default. To make Streak work there too:
+
+1. `chrome://extensions` → find the Streak card → click **Details**
+2. Scroll to **"Allow in Incognito"** → toggle it ON
+
+Firefox: `about:addons` → Streak → Permissions → enable **"Run in Private Windows"**.
+
 ## Cross-browser support
 
 Built with [WXT](https://wxt.dev/) — single codebase ships to Chrome, Firefox, Edge, Brave, Arc, Opera, and (later) Safari.
