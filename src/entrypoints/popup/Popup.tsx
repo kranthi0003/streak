@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { get, update } from "@/lib/storage";
 import { daysSince, nextMilestone, recordRelapse } from "@/lib/streak";
 import { hasPin, verifyPin } from "@/lib/pin";
+import { daysLeftInLock, hoursLeftInLock, isStrictActive, isStrictLocked } from "@/lib/strict";
 
 const INCOGNITO_DISMISSED_KEY = "ui.incognitoBannerDismissed";
 
@@ -14,6 +15,9 @@ export function Popup() {
   const [showPinPrompt, setShowPinPrompt] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showIncognitoBanner, setShowIncognitoBanner] = useState(false);
+  const [strictActive, setStrictActive] = useState(false);
+  const [strictLocked, setStrictLocked] = useState(false);
+  const [strictLockUntil, setStrictLockUntil] = useState<number | null>(null);
 
   useEffect(() => {
     void refresh();
@@ -23,11 +27,21 @@ export function Popup() {
   }, []);
 
   async function refresh() {
-    const [s, p, hp] = await Promise.all([get("streak"), get("protection"), hasPin()]);
+    const [s, p, hp, strict, active, locked] = await Promise.all([
+      get("streak"),
+      get("protection"),
+      hasPin(),
+      get("strict"),
+      isStrictActive(),
+      isStrictLocked(),
+    ]);
     setDays(daysSince(s.startedAt));
     setEnabled(p.enabled);
     setCooldownUntil(p.cooldownUntil);
     setPinSet(hp);
+    setStrictActive(active);
+    setStrictLocked(locked);
+    setStrictLockUntil(strict.lockedUntil);
   }
 
   async function checkIncognitoStatus() {
@@ -125,7 +139,7 @@ export function Popup() {
         )}
       </section>
 
-      {cooldownUntil ? (
+      {cooldownUntil && !strictLocked ? (
         <div className="cooldown">
           <p>
             Disable pending — protection turns off{" "}
@@ -133,13 +147,31 @@ export function Popup() {
           </p>
           <button onClick={cancelCooldown}>Cancel disable (stay protected)</button>
         </div>
-      ) : (
+      ) : !strictLocked ? (
         <div className="actions">
           {enabled && (
             <button className="danger" onClick={handleDisableClick}>
               Disable protection…
             </button>
           )}
+        </div>
+      ) : null}
+
+      {strictLocked && strictLockUntil && (
+        <div className="strict-lock">
+          <p className="strict-title">🔒 Strict Mode active</p>
+          <p className="strict-sub">
+            Protection cannot be disabled for{" "}
+            <strong>
+              {daysLeftInLock(strictLockUntil) >= 1
+                ? `${daysLeftInLock(strictLockUntil)} more day${daysLeftInLock(strictLockUntil) === 1 ? "" : "s"}`
+                : `${hoursLeftInLock(strictLockUntil)} hours`}
+            </strong>
+            .
+          </p>
+          <p className="strict-honest">
+            Uninstalling the extension still removes Streak — that's a browser limit no extension can bypass.
+          </p>
         </div>
       )}
 

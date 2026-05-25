@@ -14,6 +14,12 @@ export interface ProtectionState {
   cooldownUntil: number | null; // epoch ms; if set, "disable" is pending
 }
 
+export interface StrictModeState {
+  active: boolean;
+  lockedUntil: number | null; // epoch ms; cannot be turned off until this passes
+  enabledAt: number | null;
+}
+
 export interface PinState {
   hash: string | null; // sha-256 hex, empty if PIN not set
   setAt: number | null;
@@ -48,11 +54,18 @@ export const DEFAULT_PROTECTION: ProtectionState = {
   cooldownUntil: null,
 };
 
+export const DEFAULT_STRICT: StrictModeState = {
+  active: false,
+  lockedUntil: null,
+  enabledAt: null,
+};
+
 export const DEFAULT_PIN: PinState = { hash: null, setAt: null };
 
 type Keys = {
   streak: StreakState;
   protection: ProtectionState;
+  strict: StrictModeState;
   pin: PinState;
   settings: Settings;
 };
@@ -60,6 +73,7 @@ type Keys = {
 const DEFAULTS: Keys = {
   streak: DEFAULT_STREAK,
   protection: DEFAULT_PROTECTION,
+  strict: DEFAULT_STRICT,
   pin: DEFAULT_PIN,
   settings: DEFAULT_SETTINGS,
 };

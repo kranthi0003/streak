@@ -18,3 +18,7 @@ button:hover { background: #1d4ed8; }
 .chips li button { background: transparent; color: #94a3b8; padding: 0 4px; font-size: 14px; }
 .chips li button:hover { color: #ef4444; }
 .status { position: fixed; bottom: 24px; right: 24px; background: #10b981; color: #fff; padding: 10px 16px; border-radius: 8px; font-size: 13px; }
+.strict-banner { background: rgba(16, 185, 129, 0.10); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 10px; padding: 14px; }
+.strict-banner p { margin: 0 0 4px; }
+input:disabled, select:disabled { opacity: 0.5; cursor: not-allowed; }
+.row select { padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #f8fafc; font: inherit; flex: 1; }
